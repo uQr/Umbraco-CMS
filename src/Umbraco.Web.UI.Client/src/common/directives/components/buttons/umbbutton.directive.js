@@ -13,10 +13,6 @@
                scope.state = "init";
             }
 
-            if (scope.buttonStyle) {
-               scope.style = "btn-" + scope.buttonStyle;
-            }
-
          }
 
          activate();
@@ -48,6 +44,7 @@
             href: "@?",
             type: "@",
             buttonStyle: "@?",
+            buttonStyleEval: "=?",
             state: "=?",
             shortcut: "@?",
             label: "@?",
