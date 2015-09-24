@@ -9,17 +9,19 @@
 (function() {
 	"use strict";
 
-	function DocumentTypeEditController($scope, $routeParams, contentTypeResource, dataTypeResource, editorState, contentEditingHelper, formHelper, navigationService, iconHelper, contentTypeHelper, notificationsService, $filter) {
+	function DocumentTypeEditController($scope, $routeParams, contentTypeResource, dataTypeResource, editorState, contentEditingHelper, formHelper, navigationService, iconHelper, contentTypeHelper, notificationsService, $filter, modelsResource, $timeout) {
 
 		var vm = this;
 
 		vm.save = save;
+		vm.buildModels = buildModels;
 
 		vm.currentNode = null;
 		vm.contentType = {};
 		vm.page = {};
 		vm.page.loading = false;
 		vm.page.saveButtonState = "init";
+	    vm.page.modelsButtonState = "init";
 		vm.page.navigation = [
 			{
 				"name": "Design",
@@ -107,7 +109,18 @@
 				}
 			]
 		}
-	];
+		];
+
+		vm.page.areModelsOutOfDate = false;
+	    vm.page.modelsButtonStyle = "";
+	    modelsResource.getModelsOutOfDateStatus()
+	        .then(function (json) {
+	            var status = angular.fromJson(json);
+	            if (status === "out-of-date") {
+	                vm.page.areModelsOutOfDate = true;
+	                vm.page.modelsButtonStyle = "warning";
+                }
+	        });
 
 		if ($routeParams.create) {
 
@@ -136,6 +149,126 @@
 
 			});
 		}
+
+	    // fixme - need a better confirm
+        // fixme - need a way to know whether the app will restart?
+
+		function buildModels() {
+		    // that works...
+            /*
+		    if (confirm("Rebuild models and restart the app - Sure?")) {
+		        vm.page.modelsButtonState = "busy";
+		        modelsResource.buildModels().then(function () {
+		            modelsResource.getModelsOutOfDateStatus()
+                        .then(function (json) {
+                            var status = angular.fromJson(json);
+                            var areModelsOutOfDate = (status === "out-of-date");
+                            vm.page.modelsButtonState = "success";
+		                    if (areModelsOutOfDate)
+		                        notificationsService.warning("Models have been rebuilt but are still out-of-date.");
+		                    else
+		                        notificationsService.success("Models have been rebuilt and are now up-to-date.");
+		                    $timeout(function() {
+		                        vm.page.areModelsOutOfDate = areModelsOutOfDate;
+		                    }, 500);
+		                });
+		        });
+		    }
+            */
+            // but that should be more kosher
+		    vm.modelsOverlay = {};
+		    vm.modelsOverlay.title = "ModelsBuilder";
+		    vm.modelsOverlay.view = "views/documenttype/overlays/models/models.html";
+		    vm.modelsOverlay.show = true;
+
+		    vm.modelsOverlay.page = {};
+		    vm.modelsOverlay.page.areModelsOutOfDate = vm.page.areModelsOutOfDate;
+		    vm.modelsOverlay.page.modelsButtonState = "init";
+		    vm.modelsOverlay.page.modelsButtonStyle = vm.page.areModelsOutOfDate ? "warning" : "";
+
+		    vm.modelsOverlay.page.buildModels = function (outOfDate) {
+		        vm.modelsOverlay.page.modelsButtonState = "busy";
+		        modelsResource.buildModels().then(function() {
+		            modelsResource.getModelsOutOfDateStatus()
+                        .then(function (json) {
+                            var status = angular.fromJson(json);
+
+                            vm.modelsOverlay.page.areModelsOutOfDate = (status === "out-of-date");
+		                    vm.page.areModelsOutOfDate = vm.modelsOverlay.page.areModelsOutOfDate;
+
+		                    vm.modelsOverlay.page.modelsButtonStyle = vm.page.areModelsOutOfDate ? "warning" : "";
+		                    vm.page.modelsButtonStyle = vm.modelsOverlay.page.modelsButtonStyle;
+
+                            vm.modelsOverlay.page.modelsButtonState = "init";
+
+                            if (vm.page.areModelsOutOfDate) {
+                                notificationsService.warning("Models have been rebuilt but are still out-of-date.");
+                                vm.page.modelsButtonStyle = "warning";
+                            } else {
+                                notificationsService.success("Models have been rebuilt and are now up-to-date.");
+                                vm.page.modelsButtonStyle = "";
+                            }
+                        });
+		        });
+		    };
+
+		    // no! else there's a 'submit' button!
+            /*
+		    vm.modelsOverlay.submit = function (model) {
+
+		        //_.each(model.selectedImages, function (media, i) {
+
+		        //    if (!media.thumbnail) {
+		        //        media.thumbnail = mediaHelper.resolveFileFromEntity(media, true);
+		        //    }
+
+		        //    $scope.images.push(media);
+		        //    $scope.ids.push(media.id);
+		        //});
+
+		        //$scope.sync();
+
+		        vm.modelsOverlay.show = false;
+		        vm.modelsOverlay = null;
+		    };
+            */
+
+		    vm.modelsOverlay.close = function (oldModel) {
+		        vm.modelsOverlay.show = false;
+		        vm.modelsOverlay = null;
+
+		        modelsResource.getModelsOutOfDateStatus()
+                    .then(function (json) {
+                        var status = angular.fromJson(json);
+                        if (status === "out-of-date")
+                            vm.page.areModelsOutOfDate = true;
+                    });
+		    };
+
+		    return;
+            alert("build!");
+            scope.modelsDialogModel = {};
+            scope.modelsDialogModel.title = "Models";
+            scope.modelsDialogModel.view = "views/documentType/dialogs/models/models.html";
+            scope.modelsDialogModel.show = true;
+
+            scope.compositionsDialogModel.submit = function () {
+
+                // do our stuff
+
+                // remove overlay
+                scope.compositionsDialogModel.show = false;
+                scope.compositionsDialogModel = null;
+            };
+
+            scope.compositionsDialogModel.close = function () {
+                // do our stuff
+
+                // remove overlay
+                scope.compositionsDialogModel.show = false;
+                scope.compositionsDialogModel = null;
+            };
+        }
 
 
 		/* ---------- SAVE ---------- */
@@ -185,6 +318,8 @@
 
 				vm.page.saveButtonState = "success";
 
+				vm.page.areModelsOutOfDate = true;
+			    vm.page.modelsButtonStyle = "warning";
 			});
 
 		}

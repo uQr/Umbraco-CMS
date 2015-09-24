@@ -9,41 +9,49 @@
         <umb-editor-view>
 
             <umb-editor-header
-                    name="vm.contentType.name"
-                    alias="vm.contentType.alias"
-                    description="vm.contentType.description"
-                    navigation="vm.page.navigation"
-                    icon="vm.contentType.icon">
+                name="vm.contentType.name"
+                alias="vm.contentType.alias"
+                description="vm.contentType.description"
+                navigation="vm.page.navigation"
+                icon="vm.contentType.icon">
             </umb-editor-header>
 
             <umb-editor-container>
 
-               <umb-editor-sub-views sub-views="vm.page.navigation" model="vm.contentType"></umb-editor-sub-views>
+                <umb-editor-sub-views sub-views="vm.page.navigation" model="vm.contentType"></umb-editor-sub-views>
 
             </umb-editor-container>
 
             <umb-editor-footer>
 
-               <umb-editor-footer-content-left>
+                <umb-editor-footer-content-left>
 
-                  <umb-keyboard-shortcuts-overview
-                    model="vm.page.keyboardShortcutsOverview">
-                  </umb-keyboard-shortcuts-overview>
+                    <umb-keyboard-shortcuts-overview
+                        model="vm.page.keyboardShortcutsOverview">
+                    </umb-keyboard-shortcuts-overview>
 
-               </umb-editor-footer-content-left>
+                </umb-editor-footer-content-left>
 
-               <umb-editor-footer-content-right>
+                <umb-editor-footer-content-right>
 
-                  <umb-button
-                     type="submit"
-                     state="vm.page.saveButtonState"
-                     button-style="success"
-                     shortcut="ctrl+s"
-                     label="Save"
-                     label-key="buttons_save">
-                  </umb-button>
+                    <umb-button
+                        type="button"
+                        state="vm.page.modelsButtonState"
+                        button-style-eval="vm.page.modelsButtonStyle"
+                        action="vm.buildModels()"
+                        label="Models Builder">
+                    </umb-button>
 
-               </umb-editor-footer-content-right>
+                    <umb-button
+                        type="submit"
+                        state="vm.page.saveButtonState"
+                        button-style="success"
+                        shortcut="ctrl+s"
+                        label="Save"
+                        label-key="buttons_save">
+                    </umb-button>
+
+                </umb-editor-footer-content-right>
 
 
             </umb-editor-footer>
@@ -51,5 +59,11 @@
         </umb-editor-view>
 
     </form>
+
+    <umb-overlay ng-if="vm.modelsOverlay.show"
+                 model="vm.modelsOverlay"
+                 position="right"
+                 view="vm.modelsOverlay.view">
+    </umb-overlay>
 
 </div>

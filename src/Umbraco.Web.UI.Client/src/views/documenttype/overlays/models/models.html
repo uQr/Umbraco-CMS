@@ -1,0 +1,27 @@
+﻿<div class="umb-overlay-body">
+
+    <div class="umb-control-group">
+        <small ng-if="model.page.areModelsOutOfDate">
+            Your models are definitively quite out-of-date. What a pity.
+            You should really consider rebuilding them. Yes, click on that button, below.
+            Of course that will restart your application. No pain, no gain.
+            Scared? Not ready? Just close that panel, then.
+        </small>
+        <small ng-if="!model.page.areModelsOutOfDate">
+            Your models looks quite up-to-date to me. Now of course, you could still wish to rebuild them.
+            Well, that's possible, just click on the button below.
+            Of course that will restart your application. There's not free lunch.
+            Not feeling ready, after all? Just close that panel, then.
+        </small>
+    </div>
+
+    <div class="umb-control-group">
+        <umb-button type="button"
+                    state="model.page.modelsButtonState"
+                    button-style-eval="model.page.modelsButtonStyle"
+                    action="model.page.buildModels()"
+                    label="Rebuild Models">
+        </umb-button>
+    </div>
+
+</div>

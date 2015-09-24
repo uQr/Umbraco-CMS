@@ -37,7 +37,8 @@
 
     <div class="umb-overlay-drawer" ng-if="model.close || model.submit">
       <div class="umb-overlay-drawer-content">
-        <umb-button ng-if="model.close" type="button" label="Cancel" action="closeOverLay()" button-style="link"></umb-button>
+        <umb-button ng-if="model.close && model.submit" type="button" label="Cancel" action="closeOverLay()" button-style="link"></umb-button>
+        <umb-button ng-if="model.close && !model.submit" type="button" label="Close" action="closeOverLay()" button-style="link"></umb-button>
         <umb-button ng-if="model.submit" type="submit" label="Submit" button-style="success"></umb-button>
       </div>
     </div>
