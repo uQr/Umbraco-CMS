@@ -8,21 +8,21 @@
 
    <div ng-if="state !== 'init'" class="umb-button__overlay"></div>
 
-   <a ng-if="type === 'link'" href="{{href}}" class="btn umb-button__button btn-{{(buttonStyle?buttonStyle:buttonStyleEval)}}" hotkey="{{shortcut}}">
+   <a ng-if="type === 'link'" href="{{href}}" class="btn umb-button__button" ng-class="'btn-' + (buttonStyle?buttonStyle:buttonStyleEval)" hotkey="{{shortcut}}">
       <span class="umb-button__content" ng-class="{'-hidden': state !== 'init'}">
          <localize ng-if="labelKey" key="{{labelKey}}">{{label}}</localize>
          <span ng-if="!labelKey">{{label}}</span>
       </span>
    </a>
 
-   <button ng-if="type === 'button'" type="button" class="btn umb-button__button btn-{{(buttonStyle?buttonStyle:buttonStyleEval)}}" ng-click="action(model)" hotkey="{{shortcut}}">
+   <button ng-if="type === 'button'" type="button" class="btn umb-button__button" ng-class="'btn-' + (buttonStyle?buttonStyle:buttonStyleEval)" ng-click="action(model)" hotkey="{{shortcut}}">
       <span class="umb-button__content" ng-class="{'-hidden': state !== 'init'}">
          <localize ng-if="labelKey" key="{{labelKey}}">{{label}}</localize>
          <span ng-if="!labelKey">{{label}}</span>
       </span>
    </button>
 
-   <button ng-if="type === 'submit'" type="submit" class="btn umb-button__button btn-{{(buttonStyle?buttonStyle:buttonStyleEval)}}" hotkey="{{shortcut}}">
+   <button ng-if="type === 'submit'" type="submit" class="btn umb-button__button" ng-class="'btn-' + (buttonStyle?buttonStyle:buttonStyleEval)" hotkey="{{shortcut}}">
       <span class="umb-button__content" ng-class="{'-hidden': state !== 'init'}">
          <localize ng-if="labelKey" key="{{labelKey}}">{{label}}</localize>
          <span ng-if="!labelKey">{{label}}</span>
